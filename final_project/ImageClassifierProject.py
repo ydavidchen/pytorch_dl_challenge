@@ -15,10 +15,14 @@ from torchvision import datasets, transforms, models
 import json
 
 # CONSTANTS
-ALEX_NET = models.alexnet(pretrained=True);
 BATCH_SIZE = 32;
 CROP, RESIZE = 224, 255;
 NORMALIZE = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]);
+LEARN_RATE = 0.01;
+N_EPOCHS = 10;
+model = models.alexnet(pretrained=True);
+criterion = nn.CrossEntropyLoss();
+optimizer = optim.SGD(model.parameters(), lr=LEARN_RATE);
 data_dir = './flower_data';
 train_dir = data_dir + '/train';
 valid_dir = data_dir + '/valid';
@@ -48,14 +52,7 @@ with open('cat_to_name.json', 'r') as f:
     cat_to_name = json.load(f);
 
 # Building the classifier
-model = ALEX_NET;
-criterion = nn.CrossEntropyLoss();
-optimizer = optim.SGD(model.parameters(), lr=0.01);
-n_epochs = 2;
-saveModel = False;
-valid_loss_min = np.Inf;
-
-for epoch in range(1, n_epochs+1):
+for epoch in range(1, N_EPOCHS+1):
     train_loss, valid_loss = 0.0, 0.0; #init; used to keep track
 
     ## Phase I: Training
